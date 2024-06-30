@@ -53,22 +53,58 @@
             text-align: left;
             white-space: pre-wrap;
         }
+        .loading {
+            color: #007bff;
+            margin-top: 10px;
+        }
     </style>
+    <script>
+        function recordAudio() {
+            document.getElementById('loading').textContent = 'Recording...';
+            fetch('/record', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loading').textContent = '';
+                    document.getElementById('result').textContent = data.result;
+                })
+                .catch(error => {
+                    document.getElementById('loading').textContent = '';
+                    document.getElementById('result').textContent = 'Error recording audio.';
+                });
+        }
+
+        function downloadAudio() {
+            const youtubeUrl = document.getElementById('youtube_url').value;
+            document.getElementById('loading').textContent = 'Downloading...';
+            fetch('/download', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 'youtube_url': youtubeUrl })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loading').textContent = '';
+                    document.getElementById('result').textContent = data.result;
+                })
+                .catch(error => {
+                    document.getElementById('loading').textContent = '';
+                    document.getElementById('result').textContent = 'Error downloading audio.';
+                });
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Audio Recorder and YouTube Downloader</h1>
-        <form method="post">
-            <button name="record" type="submit">Record Audio</button>
+        <form onsubmit="event.preventDefault(); recordAudio();">
+            <button type="submit">Record Audio</button>
         </form>
-        <form method="post">
-            <input type="text" name="youtube_url" placeholder="Enter YouTube URL" required>
-            <button name="download" type="submit">Download Audio</button>
+        <form onsubmit="event.preventDefault(); downloadAudio();">
+            <input type="text" id="youtube_url" placeholder="Enter YouTube URL" required>
+            <button type="submit">Download Audio</button>
         </form>
-        {% if result %}
-            <h2>Result:</h2>
-            <pre>{{ result }}</pre>
-        {% endif %}
+        <div class="loading" id="loading"></div>
+        <pre id="result"></pre>
     </div>
 </body>
 </html>
