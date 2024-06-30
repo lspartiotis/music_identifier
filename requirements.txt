@@ -9,3 +9,6 @@ docopt
 joblib
 psutil
 git+https://github.com/dpwe/audfprint.git
+
+ounddevice==0.4.7 
+wavio==0.0.9
