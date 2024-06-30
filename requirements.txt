@@ -8,3 +8,4 @@ scipy
 docopt
 joblib
 psutil
+git+https://github.com/dpwe/audfprint.git
